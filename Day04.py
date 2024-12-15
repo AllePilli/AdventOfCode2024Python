@@ -1,3 +1,5 @@
+from utils import get_input
+
 DIR_DELTAS = [
     (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)
 ]
@@ -57,11 +59,8 @@ def part2(input: list[str]) -> int:
     return count
 
 
-with open('Day04_test_1.txt', 'r') as file:
-    test_input_1 = file.readlines()
-
-with open('Day04.txt', 'r') as file:
-    input = file.readlines()
+test_input_1 = get_input('Day04_test_1')
+input = get_input('Day04')
 
 output_part1_test = part1(test_input_1)
 assert output_part1_test == 18, f'{output_part1_test}'
@@ -70,11 +69,12 @@ output_part1 = part1(input)
 assert output_part1 == 2549, f'{output_part1}'
 print(output_part1)
 
-with open('Day04_test_2.txt', 'r') as file:
-    test_input_2 = file.readlines()
+
+test_input_2 = get_input('Day04_test_2')
 
 output_part2_test = part2(test_input_2)
 assert output_part2_test == 9, f'{output_part2_test}'
 
 output_part2 = part2(input)
+assert output_part2 == 2003, f'{output_part2}'
 print(output_part2)
