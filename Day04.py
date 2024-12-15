@@ -19,8 +19,25 @@ def count_word(x: int, y: int, word: str, input: list[str]) -> int:
     return count
 
 
+def is_x_mas(x: int, y: int, input: list[str]) -> bool:
+    if x == 0 or x == len(input[0]) - 1 or y == 0 or y == len(input) - 1:
+        return False
+
+    for d1, d2 in [((1, 1), (-1, -1)), ((1, -1), (-1, 1))]:
+        d1x, d1y = d1
+        d2x, d2y = d2
+
+        concat = f'{input[y + d1y][x + d1x]}{input[y + d2y][x + d2x]}'
+
+        if concat not in ('SM', 'MS'):
+            return False
+
+    return True
+
+
 def part1(input: list[str]) -> int:
     count = 0
+
     for y, line in enumerate(input):
         for x, c in enumerate(line):
             if c == 'X':
@@ -29,14 +46,35 @@ def part1(input: list[str]) -> int:
     return count
 
 
-with open('Day04_test.txt', 'r') as file:
-    test_input = file.readlines()
+def part2(input: list[str]) -> int:
+    count = 0
+
+    for y, line in enumerate(input):
+        for x, c in enumerate(line):
+            if c == 'A' and is_x_mas(x, y, input):
+                count += 1
+
+    return count
+
+
+with open('Day04_test_1.txt', 'r') as file:
+    test_input_1 = file.readlines()
 
 with open('Day04.txt', 'r') as file:
     input = file.readlines()
 
-output_part1_test = part1(test_input)
+output_part1_test = part1(test_input_1)
 assert output_part1_test == 18, f'{output_part1_test}'
 
 output_part1 = part1(input)
+assert output_part1 == 2549, f'{output_part1}'
 print(output_part1)
+
+with open('Day04_test_2.txt', 'r') as file:
+    test_input_2 = file.readlines()
+
+output_part2_test = part2(test_input_2)
+assert output_part2_test == 9, f'{output_part2_test}'
+
+output_part2 = part2(input)
+print(output_part2)
