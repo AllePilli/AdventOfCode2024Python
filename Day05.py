@@ -23,10 +23,7 @@ def part1(input: tuple[list[str], list[str]]) -> int:
         rule = rules_dict.get(page, None)
 
         if not rule:
-            if tail == [page] or not tail:
-                return True
-            else:
-                return False
+            return tail == [page] or not tail
 
         return all([t in rule for t in tail])
             
@@ -43,12 +40,11 @@ def part1(input: tuple[list[str], list[str]]) -> int:
             rules_dict[p1].append(p2)
 
     for update in updates:
-        pages_to_update = list(map(lambda x: int(x), update.split(',')))
+        pages_to_update = [int(x) for x in update.split(',')]
         tail = pages_to_update[1:]
         correct_update = True
         
         for page in pages_to_update.copy():
-            # import ipdb; ipdb.set_trace()
             if not tail:
                 break
                 
