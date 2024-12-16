@@ -2,7 +2,7 @@ from utils import get_input
 import re
 
 
-def process_input(input: list[str]) -> tuple[list[str], list[str]]:
+def process_input(input: list[str]) -> tuple[dict[int, list[int]], list[str]]:
     rules = []
     updates = []
     reading_rules = True
@@ -16,33 +16,7 @@ def process_input(input: list[str]) -> tuple[list[str], list[str]]:
         else:
             updates.append(line.strip())
 
-    return rules, updates
-
-def is_correct_update(pages_to_update: list[int], rules_dict: dict[int, list[int]]) -> bool:
-    def correct_page(page, tail, rules_dict):
-        rule = rules_dict.get(page, None)
-
-        if not rule:
-            return tail == [page] or not tail
-
-        return all([t in rule for t in tail])
-
-    tail = pages_to_update[1:]
     
-    for page in pages_to_update.copy():
-        if not tail:
-            break
-            
-        if not correct_page(page, tail, rules_dict):
-            return False
-
-        tail = tail[1:]
-
-    return True
-
-def part1(input: tuple[list[str], list[str]]) -> int:
-    sum = 0
-    rules, updates = input
     rules_dict = dict()
 
     for rule in rules:
@@ -51,6 +25,27 @@ def part1(input: tuple[list[str], list[str]]) -> int:
             rules_dict[p1] = [p2]
         else:
             rules_dict[p1].append(p2)
+
+    return rules_dict, updates
+
+def correct_page(pages, page_idx, rules_dict):
+    rule = rules_dict.get(pages[page_idx], None)
+
+    if not rule:
+        return page_idx in (len(pages), len(pages) - 1)
+
+    return all([t in rule for t in pages[page_idx + 1:]])
+
+def is_correct_update(pages_to_update: list[int], rules_dict: dict[int, list[int]]) -> bool:
+    for page_idx in range(len(pages_to_update)):
+        if not correct_page(pages_to_update, page_idx, rules_dict):
+            return False
+
+    return True
+
+def part1(input: tuple[dict[int, list[int]], list[str]]) -> int:
+    sum = 0
+    rules_dict, updates = input
 
     for update in updates:
         pages_to_update = [int(x) for x in update.split(',')]
@@ -62,25 +57,8 @@ def part1(input: tuple[list[str], list[str]]) -> int:
 
 
 def part2(input) -> int:
-    def correct_page(pages, page_idx, rules_dict):
-        rule = rules_dict.get(pages[page_idx], None)
-
-        if not rule:
-            return page_idx in (len(pages), len(pages) - 1)
-
-        return all([t in rule for t in pages[page_idx + 1:]])
-
     sum = 0
-    rules, updates = input
-    rules_dict = dict()
-
-    for rule in rules:
-        p1, p2 = [int(x) for x in rule.split('|')[:2]]
-        if p1 not in rules_dict:
-            rules_dict[p1] = [p2]
-        else:
-            rules_dict[p1].append(p2)
-
+    rules_dict, updates = input
     incorrect_updates = []
 
     for update in updates:
